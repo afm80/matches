@@ -16,6 +16,6 @@ jobs:
       - run: |
           git config user.name "bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data.json
+          git add data.json standings.json
           git commit -m "update matches" || exit 0
           git push
