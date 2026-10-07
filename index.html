@@ -195,7 +195,7 @@ function ruleOf(m){
 function card(m){
   const live = LIVE.includes(m.s), done = DONE.includes(m.s), off = OFF.includes(m.s);
   let mid;
-  if(live||done) mid = `<div class="score">${m.gh} - ${m.ga}</div><div class="st ${live?"live":""}">${live?"مباشر":"انتهت"}</div>`;
+  if(live||done) mid = `<div class="score">${m.ga} - ${m.gh}</div><div class="st ${live?"live":""}">${live?"مباشر":"انتهت"}</div>`;
   else if(off) mid = `<div class="st">مؤجلة</div>`;
   else mid = `<div class="time">${localTime(m)}</div><div class="st">لم تبدأ</div>`;
   return `<div class="m" data-i="${m._i}">${team(m.h,m.hl)}<div class="mid">${mid}</div>${team(m.a,m.al)}</div>`;
