@@ -160,6 +160,8 @@ function lgAr(lg){
   return c ? `${name} - ${c}` : name;
 }
 
+// الدوريات والبطولات المسموحة فقط (نفس أرقام fetch_matches.py)
+const KEEP = new Set([2,3,848,5,4,1,7,17,6,36,9,25,32,30,29,34,39,140,135,78,61,542]);
 const SKIP = /\bu-?\d{2}\b|women|\(w\)|\bw$|reserve|youth|development league|\bii\b|\bb team\b/i;
 const RULES = [
  ["دوري أبطال أوروبا",/^uefa champions league -/i],
@@ -210,7 +212,7 @@ function render(){
   if(failed){list.innerHTML='<div class="msg">تعذر تحميل البيانات. حاول لاحقاً.</div>';return;}
   const d = new Date(); d.setDate(d.getDate()+offset);
   const key = dkey(d);
-  const day = all.filter(m=>dkey(new Date(m.t))===key && !SKIP.test(`${m.lg} ${m.h} ${m.a}`));
+  const day = all.filter(m=>KEEP.has(m.li) && dkey(new Date(m.t))===key && !SKIP.test(`${m.lg} ${m.h} ${m.a}`));
   if(!day.length){list.innerHTML='<div class="msg">لا توجد مباريات لهذا اليوم.</div>';return;}
   day.forEach(m=>{ m._r = ruleOf(m) || {i:99,title:lgAr(m.lg)}; });
   const ended = m => DONE.includes(m.s) || OFF.includes(m.s);
