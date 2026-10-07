@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>جدول مباريات اليوم</title>
+<title>Alfaham Sport - جدول مباريات اليوم</title>
 <style>
 :root{color-scheme:dark;--card:#18181b;--card2:#202024;--ink:#f5f5f2;--mute:#9b9ba1;--line:#2c2c31;--accent:#ff7a00;--on:#111111;--bg1:#232326;--bg2:#121214;--bg3:#070708;--h1:#2a2a2e;--h2:#101012;--m1:#1f1f23;--m2:#141416;--inp:#0d0d0f}
 :root[data-theme="light"]{color-scheme:light;--card:#ffffff;--card2:#f1f1f3;--ink:#16161a;--mute:#6b6b73;--line:#e0e0e4;--accent:#e65f00;--on:#ffffff;--bg1:#ffffff;--bg2:#f4f4f6;--bg3:#ececef;--h1:#ffffff;--h2:#f1f1f4;--m1:#ffffff;--m2:#f7f7f9;--inp:#ffffff}
@@ -14,10 +14,11 @@ header{background:linear-gradient(160deg,var(--h1),var(--h2));border-bottom:3px 
 .wrap{max-width:720px;margin:0 auto}
 .top{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;margin-bottom:8px}
 .brand{text-align:center}
-.brand img{max-height:60px;max-width:100%;display:inline-block}
+.logo{font-family:"Segoe UI",Arial,sans-serif;font-weight:800;font-size:1.7rem;letter-spacing:.5px;line-height:1.2}
+.logo span{color:var(--accent)}
 h1{margin:0 0 4px;font-size:1.2rem;text-align:center}
 .tz{text-align:center;font-size:.8rem;color:var(--mute);margin-bottom:12px}
-#theme{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card2);font-size:1.2rem;cursor:pointer;line-height:1}
+#theme,#menuBtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card2);font-size:1.2rem;cursor:pointer;line-height:1}
 .days{display:flex;gap:8px;margin-bottom:10px}
 .days button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:10px;font:inherit;cursor:pointer}
 .days button.on{background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700}
@@ -53,18 +54,48 @@ h2{font-size:.98rem;margin:22px 0 8px;padding-right:10px;border-right:4px solid 
 .ev{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:.92rem}
 .ev .mn{min-width:44px;color:var(--accent);font-weight:700;direction:ltr;text-align:right}
 .ev .tm{color:var(--mute);font-size:.8rem;margin-right:auto}
+.drawer-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:19}
+.drawer-ov[hidden]{display:none}
+.drawer{position:fixed;top:0;bottom:0;right:0;width:min(82vw,320px);background:var(--card);color:var(--ink);border-left:3px solid var(--accent);transform:translateX(100%);transition:transform .2s;z-index:20;overflow:auto;padding:14px;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+.drawer.open{transform:none}
+#menuList{margin-top:12px}
+.mi{display:flex;align-items:center;gap:10px;width:100%;padding:10px;margin-bottom:2px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:right;border-radius:10px;cursor:pointer}
+.mi img{width:26px;height:26px;object-fit:contain;background:#fff;border-radius:6px;padding:2px;flex:none}
+.mi.on{background:var(--accent);color:var(--on);font-weight:700}
+.site{display:block;margin-top:16px;padding:12px;border:1px solid var(--accent);border-radius:10px;color:var(--accent);text-align:center;font-weight:700;text-decoration:none}
+.lghead{display:flex;align-items:center;gap:12px;margin:14px 0 4px}
+.lghead img{width:46px;height:46px;object-fit:contain;background:#fff;border-radius:10px;padding:4px}
+.lgt{font-weight:800;font-size:1.05rem}
+.tabs{display:flex;gap:8px;margin:12px 0}
+.tab{flex:1;padding:9px;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:10px;font:inherit;cursor:pointer}
+.tab.on{background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 6px;margin-bottom:10px}
+.tb{width:100%;border-collapse:collapse;font-size:.85rem}
+.tb th{color:var(--mute);font-weight:600;padding:8px 4px;text-align:center;white-space:nowrap}
+.tb td{padding:8px 4px;text-align:center;border-top:1px solid var(--line)}
+.tb td.tn{text-align:right;min-width:130px}
+.tnw{display:flex;align-items:center;gap:6px}
+.tnw img{width:20px;height:20px;object-fit:contain}
+.sc{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.sc .rk{width:22px;color:var(--accent);font-weight:700;text-align:center}
+.sc img{width:24px;height:24px;object-fit:contain}
+.sc .nm{flex:1;font-size:.92rem}
+.sc .nm small{display:block;color:var(--mute)}
+.sc .gl{font-weight:800}
 .msg{text-align:center;color:var(--mute);padding:40px 0}
 </style>
 </head>
 <body>
 <header><div class="wrap">
-  <div class="top"><span></span><div class="brand"><img id="logo" src="logo.png" alt="الشعار" onerror="this.style.display='none'"></div><button id="theme" aria-label="تبديل الوضع الليلي والنهاري"></button></div>
+  <div class="top"><button id="menuBtn" aria-label="قائمة البطولات">☰</button><div class="brand"><div class="logo" dir="ltr">Alfaham <span>Sport</span></div></div><button id="theme" aria-label="تبديل الوضع الليلي والنهاري"></button></div>
   <h1>⚽ جدول المباريات</h1>
   <div class="tz" id="tz"></div>
   <div class="days" id="days"></div>
   <input id="q" placeholder="ابحث عن فريق أو دوري">
 </div></header>
 <div class="sheet" id="sheet" hidden><div class="panel" id="panel"></div></div>
+<div class="drawer-ov" id="dov" hidden></div>
+<aside class="drawer" id="drawer" aria-hidden="true"><div class="ph-top"><h3>البطولات</h3><button class="x" id="dclose" aria-label="إغلاق">✕</button></div><div id="menuList"></div><a class="site" href="https://afm80.github.io/net" target="_blank" rel="noopener">🌐 زيارة موقعنا</a></aside>
 <main id="list"><div class="msg">جاري التحميل…</div></main>
 
 <script>
@@ -185,6 +216,7 @@ function groupHtml(rows){
 function render(){
   const list = document.getElementById("list");
   if(failed){list.innerHTML='<div class="msg">تعذر تحميل البيانات. حاول لاحقاً.</div>';return;}
+  if(view!==null){renderLeague(list);return;}
   const d = new Date(); d.setDate(d.getDate()+offset);
   const key = dkey(d);
   const q = document.getElementById("q").value.trim().toLowerCase();
@@ -271,6 +303,76 @@ document.getElementById("list").addEventListener("click",e=>{
   const m = all[+c.dataset.i]; if(m) openSheet(m);
 });
 
+// ===== القائمة الجانبية وصفحة البطولة =====
+let view = null, lgData = {}, lgTab = "m";
+
+async function loadLeagues(){
+  try{ lgData = (await (await fetch("standings.json?v="+Date.now())).json()).leagues || {}; }catch(e){ lgData = {}; }
+  buildMenu();
+}
+const lgTitle = l => { const r = ruleOf({lg:`${l.name} - ${l.country}`}); return r ? r.title : lgAr(`${l.name} - ${l.country}`); };
+function buildMenu(){
+  const items = Object.values(lgData).map(l=>{const r=ruleOf({lg:`${l.name} - ${l.country}`});return {l,i:r?r.i:99,t:lgTitle(l)};})
+    .sort((a,b)=>a.i-b.i||a.t.localeCompare(b.t));
+  document.getElementById("menuList").innerHTML =
+    `<button class="mi ${view===null?"on":""}" data-v="">⚽ كل المباريات</button>` +
+    (items.length ? items.map(x=>`<button class="mi ${view===x.l.id?"on":""}" data-v="${x.l.id}"><img src="https://media.api-sports.io/football/leagues/${x.l.id}.png" alt="">${x.t}</button>`).join("")
+      : '<div class="msg" style="padding:16px 0">ستظهر البطولات بعد أول تحديث للبيانات.</div>');
+}
+function openMenu(){ document.getElementById("drawer").classList.add("open"); document.getElementById("dov").hidden=false; }
+function closeMenu(){ document.getElementById("drawer").classList.remove("open"); document.getElementById("dov").hidden=true; }
+function setView(v){
+  view = v; lgTab = "m";
+  document.getElementById("days").style.display = v===null ? "" : "none";
+  document.getElementById("q").style.display = v===null ? "" : "none";
+  buildMenu(); render(); window.scrollTo(0,0);
+}
+document.getElementById("menuBtn").onclick = openMenu;
+document.getElementById("dclose").onclick = closeMenu;
+document.getElementById("dov").onclick = closeMenu;
+document.getElementById("menuList").addEventListener("click",e=>{
+  const b = e.target.closest(".mi"); if(!b) return;
+  closeMenu(); setView(b.dataset.v==="" ? null : Number(b.dataset.v));
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeMenu(); });
+document.getElementById("list").addEventListener("click",e=>{
+  const t = e.target.closest(".tab"); if(!t) return;
+  lgTab = t.dataset.tab; render();
+});
+
+const grpAr = g => g ? String(g).replace(/Group /i,"المجموعة ").replace(/League Phase/i,"مرحلة الدوري") : "";
+function dayName(k){
+  const n = o=>{const d=new Date(); d.setDate(d.getDate()+o); return dkey(d);};
+  if(k===n(0)) return "اليوم"; if(k===n(-1)) return "أمس"; if(k===n(1)) return "غداً";
+  const [y,mo,da]=k.split("-"); return new Date(+y,+mo-1,+da).toLocaleDateString("ar",{weekday:"long",day:"numeric",month:"long"});
+}
+function leagueMatches(l){
+  const ms = all.filter(m=>m.li===l.id).sort((a,b)=>a.t.localeCompare(b.t));
+  if(!ms.length) return '<div class="msg">لا توجد مباريات لهذه البطولة في الأيام الثلاثة القريبة.</div>';
+  const g = {}; ms.forEach(m=>{(g[dkey(new Date(m.t))]=g[dkey(new Date(m.t))]||[]).push(m);});
+  return Object.keys(g).sort().map(k=>`<h2>${dayName(k)}</h2>`+g[k].map(card).join("")).join("");
+}
+function tableHtml(l){
+  if(!l.table || !l.table.length) return '<div class="msg">الترتيب غير متوفر لهذه البطولة حالياً.</div>';
+  return l.table.map(grp=>{
+    const gn = grpAr(grp[0] && grp[0].g);
+    return (gn && l.table.length>1 ? `<h2>${gn}</h2>` : "") +
+    `<div class="tw"><table class="tb"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>ف</th><th>ت</th><th>خ</th><th>له:عليه</th><th>نقاط</th></tr></thead><tbody>` +
+    grp.map(r=>`<tr><td>${r.r}</td><td class="tn"><div class="tnw"><img src="${r.l}" alt="">${tn(r.n)}</div></td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.ls}</td><td dir="ltr">${r.gf}:${r.ga}</td><td><b>${r.pt}</b></td></tr>`).join("") +
+    `</tbody></table></div>`;
+  }).join("");
+}
+function scorersHtml(l){
+  if(!l.scorers || !l.scorers.length) return '<div class="msg">قائمة الهدافين غير متوفرة لهذه البطولة حالياً.</div>';
+  return l.scorers.map((s,i)=>`<div class="sc"><span class="rk">${i+1}</span><img src="${s.l}" alt=""><span class="nm">${s.n}<small>${tn(s.t)}</small></span><span class="gl">⚽ ${s.g ?? 0}${s.a?` · 🅰️ ${s.a}`:""}</span></div>`).join("");
+}
+function renderLeague(list){
+  const l = lgData[view]; if(!l){ list.innerHTML=""; return; }
+  const tabs = [["m","المباريات"],["t","الترتيب"],["s","الهدافون"]].map(([k,n])=>`<button class="tab ${lgTab===k?"on":""}" data-tab="${k}">${n}</button>`).join("");
+  const body = lgTab==="m" ? leagueMatches(l) : lgTab==="t" ? tableHtml(l) : scorersHtml(l);
+  list.innerHTML = `<div class="lghead"><img src="https://media.api-sports.io/football/leagues/${l.id}.png" alt=""><div><div class="lgt">${lgTitle(l)}</div><div class="st">موسم ${l.season}</div></div></div><div class="tabs">${tabs}</div>${body}`;
+}
+
 function setTheme(t){
   document.documentElement.dataset.theme = t;
   document.getElementById("theme").textContent = t==="dark" ? "☀️" : "🌙";
@@ -282,7 +384,7 @@ setTheme(saved);
 document.getElementById("theme").onclick = ()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");
 
 document.getElementById("q").addEventListener("input",render);
-buildTabs();load();
+buildTabs();load();loadLeagues();
 </script>
 </body>
 </html>
