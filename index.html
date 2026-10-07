@@ -1,304 +1,102 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>قنوات البث المباشر للأطفال</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>جدول مباريات اليوم</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap');
-
+:root{color-scheme:dark;--card:#18181b;--card2:#202024;--ink:#f5f5f2;--mute:#9b9ba1;--line:#2c2c31;--accent:#ff7a00;--on:#111111}
 *{box-sizing:border-box}
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  font-family:'Cairo',sans-serif;
-  background:#000;
-}
-
-.wrapper{
-  width:100%;
-  max-width:1100px;
-  padding:10px;
-  margin:auto;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:12px;
-  justify-items:center;
-}
-
-.card{
-  background:rgba(255,255,255,.92);
-  border-radius:10px;
-  padding:4px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  cursor:pointer;
-  width:100%;
-  max-width:180px;
-  border:1px solid rgba(0,0,0,0.2);
-  color:inherit;
-  font:inherit;
-  transition:transform 0.2s;
-}
-
-.card:hover {
-  transform:scale(1.02);
-  box-shadow:0 4px 8px rgba(255,255,255,0.2);
-}
-
-.card img{
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  border-radius:8px;
-}
-
-.card-title{
-  margin-top:4px;
-  font-size:13px;
-  color:#000;
-  text-align:center;
-  font-weight:700;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  line-height:1.2;
-  padding:2px 0;
-}
-
-#playerPage{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  width:100%;
-  height:100vh;
-  background:#000;
-  display:none;
-  z-index:9999;
-  overflow:hidden;
-}
-
-#youtubeFrame{
-  width:100%;
-  height:100%;
-  border:none;
-  position:relative;
-  z-index:1;
-}
-
-#ytPoster{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index:2;
-  display:none;
-}
+html{background:#0b0b0c}
+body{margin:0;min-height:100vh;color:var(--ink);background:linear-gradient(180deg,#232326 0%,#121214 38%,#070708 100%) fixed;font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;line-height:1.5}
+header{background:linear-gradient(160deg,#2a2a2e,#101012);border-bottom:3px solid var(--accent);padding:22px 14px 16px;border-radius:0 0 18px 18px}
+.wrap{max-width:720px;margin:0 auto}
+h1{margin:0 0 14px;font-size:1.5rem}
+.days{display:flex;gap:8px;margin-bottom:10px}
+.days button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:10px;font:inherit;cursor:pointer}
+.days button.on{background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#0d0d0f;color:var(--ink);font:inherit}
+input::placeholder{color:var(--mute)}
+input:focus,.days button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+main{max-width:720px;margin:0 auto;padding:6px 14px 40px}
+h2{font-size:.98rem;margin:22px 0 8px;padding-right:10px;border-right:4px solid var(--accent)}
+.m{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:linear-gradient(145deg,#1f1f23,#141416);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+.t{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;font-weight:600;font-size:.92rem}
+.t img{width:44px;height:44px;object-fit:contain}
+.ph{width:44px;height:44px;border-radius:50%;background:var(--line)}
+.mid{text-align:center;min-width:72px}
+.time{font-size:1.15rem;font-weight:700;direction:ltr;color:var(--accent)}
+.score{font-size:1.3rem;font-weight:800;direction:ltr}
+.st{font-size:.75rem;color:var(--mute)}
+.st.live{display:inline-block;background:var(--accent);color:var(--on);font-weight:700;border-radius:20px;padding:0 8px}
+.msg{text-align:center;color:var(--mute);padding:40px 0}
 </style>
 </head>
-
 <body>
-
-<div class="wrapper" id="home">
-  <div class="grid" id="channelsGrid">
-    </div>
-</div>
-
-<div id="playerPage">
-  <img id="ytPoster">
-  <iframe id="youtubeFrame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div>
+<header><div class="wrap">
+  <h1>⚽ جدول المباريات</h1>
+  <div class="days" id="days"></div>
+  <input id="q" placeholder="ابحث عن فريق أو دوري">
+</div></header>
+<main id="list"><div class="msg">جاري التحميل…</div></main>
 
 <script>
-// أضف القنوات هنا: الاسم في سطر، والرابط في السطر الذي يليه
-const channelsData = `
+let offset = 0, all = [], failed = false;
+const dayLabels = ["أمس","اليوم","غداً"];
+const LIVE = ["1H","HT","2H","ET","BT","P","LIVE"], DONE = ["FT","AET","PEN"], OFF = ["PST","CANC","ABD","SUSP"];
+const dkey = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 
-Tom & Jerry
-https://www.youtube.com/watch?v=rEKifG2XUZg
-Tom & Jerry
-https://www.youtube.com/watch?v=_XeGYNTiuSM
-Tom & Jerry
-https://www.youtube.com/watch?v=400k2SKoeh4
-Mini Moments
-https://www.youtube.com/watch?v=btP-bWKDVik
-Adventure Time
-https://www.youtube.com/watch?v=uZkaJ3e9nfY
-Mr Bean 
-https://www.youtube.com/watch?v=kRL8tyCl1lQ
-Mr Bean 
-https://www.youtube.com/watch?v=yOxRjvGkYlc
-shaun the Sheep
-https://www.youtube.com/watch?v=iMzH7R-OJ9E
-shaun the Sheep
-https://www.youtube.com/watch?v=yH28BYhTIYo
-World of Gumball
-https://www.youtube.com/watch?v=nIyaCRNwxhU
-غامبول الموسم الجديد
-https://www.youtube.com/watch?v=IT1IZpY7uzA
-ماشا والدب
-https://www.youtube.com/watch?v=S_6wjcgw1mk
-لولو وناسة
-https://www.youtube.com/watch?v=HoX-sU9hDV8
-أغاني جديدة
-https://www.youtube.com/watch?v=JQ7mRtfj02I
-تيغ وليو
-https://www.youtube.com/watch?v=-BaC2_cmAiU
-عيد ميلادي
-https://www.youtube.com/watch?v=OzAZIsAyzk0
-سجن الهاتف المحمول
-https://www.youtube.com/watch?v=zoMjGCG5dnA
-تحدي الطائرة
-https://www.youtube.com/watch?v=XcUp-tb9bJM
-روزي وأصدقاؤها
-https://www.youtube.com/watch?v=-YiFym-tpQQ
-قناة أسرتنا مباشر
-https://www.youtube.com/watch?v=JQ7mRtfj02I
-أبطال التايتنز، انطلقوا!
-https://www.youtube.com/watch?v=21hAlnDFTLw
-نقيب لابرادور
-https://www.youtube.com/watch?v=AmHD0lbMRWk
-
-متجر تطبيقات الفحام
-https://youtu.be/LCmQ70JPXCI?si=NthnmTYKKWEo2xDz
-
-
-`;
-
-const grid = document.getElementById("channelsGrid");
-
-function getYouTubeId(url){
-  if (!url) return null;
-  try {
-    const parsed = new URL(url);
-    const host = parsed.hostname.toLowerCase();
-    let id = null;
-
-    if (host === 'youtu.be') {
-      id = parsed.pathname.split('/').filter(Boolean)[0];
-    } else if (host === 'youtube.com' || host.endsWith('.youtube.com')) {
-      id = parsed.searchParams.get('v');
-      if (!id) {
-        const match = parsed.pathname.match(/^\/(?:embed|live|shorts)\/([^/]+)/);
-        id = match ? match[1] : null;
-      }
-    }
-
-    return id && /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
-  } catch (error) {
-    return null;
-  }
+function buildTabs(){
+  const box = document.getElementById("days");
+  box.innerHTML = "";
+  [-1,0,1].forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.textContent = dayLabels[i];
+    if(o===offset) b.className = "on";
+    b.onclick = ()=>{offset=o;buildTabs();render();};
+    box.appendChild(b);
+  });
 }
 
-// توليد الكروت من النص
-const lines = channelsData.trim().split('\n').filter(l => l.trim() !== "");
-for (let i = 0; i < lines.length; i += 2) {
-    const title = lines[i].trim();
-    const stream = lines[i+1]?.trim();
-    if (title && stream) {
-        const card = document.createElement('button');
-        card.className = 'card';
-        card.type = 'button';
-        card.dataset.stream = stream;
-        card.dataset.title = title;
-        
-        const ytId = getYouTubeId(stream);
-        const img = ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : '';
-        const image = document.createElement('img');
-        image.src = img;
-        image.alt = title;
-        const cardTitle = document.createElement('div');
-        cardTitle.className = 'card-title';
-        cardTitle.textContent = title;
-        card.appendChild(image);
-        card.appendChild(cardTitle);
-        grid.appendChild(card);
-    }
+async function load(){
+  try{
+    const r = await fetch("data.json?v="+Date.now());
+    all = (await r.json()).matches || [];
+  }catch(e){ failed = true; }
+  render();
 }
 
-// الكود الأصلي للتشغيل والتحكم
-const cards = document.querySelectorAll('.card');
-const playerPage = document.getElementById("playerPage");
-const youtubeFrame = document.getElementById("youtubeFrame");
-const ytPoster = document.getElementById("ytPoster");
-const home = document.getElementById("home");
-let playerOpen = false;
-
-if (!location.hash) {
-  try { history.replaceState({view: 'home'}, '', location.href); } catch (error) {}
+function localTime(m){
+  return new Date(m.t).toLocaleTimeString("ar-EG-u-nu-latn",{hour:"2-digit",minute:"2-digit",hour12:false});
 }
 
-function stopPlayback() {
-  youtubeFrame.onload = null;
-  youtubeFrame.src = 'about:blank';
-  ytPoster.removeAttribute('src');
-  ytPoster.style.display = 'none';
+function team(name,logo){
+  const img = logo ? `<img loading="lazy" src="${logo}" alt="">` : '<div class="ph"></div>';
+  return `<div class="t">${img}<span>${name}</span></div>`;
 }
 
-function closePlayer(updateHistory = false) {
-  if (!playerOpen && playerPage.style.display !== 'block') return;
-  stopPlayback();
-  playerPage.style.display = 'none';
-  home.style.display = 'block';
-  playerOpen = false;
-  if (updateHistory) {
-    try { history.replaceState({view: 'home'}, '', location.pathname + location.search); } catch (error) {}
-  }
+function render(){
+  const list = document.getElementById("list");
+  if(failed){list.innerHTML='<div class="msg">تعذر تحميل البيانات. حاول لاحقاً.</div>';return;}
+  const d = new Date(); d.setDate(d.getDate()+offset);
+  const key = dkey(d);
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const rows = all.filter(m=>dkey(new Date(m.t))===key && (!q||`${m.h} ${m.a} ${m.lg}`.toLowerCase().includes(q)));
+  if(!rows.length){list.innerHTML='<div class="msg">لا توجد مباريات لهذا اليوم.</div>';return;}
+  const groups = {};
+  rows.forEach(m=>(groups[m.lg]=groups[m.lg]||[]).push(m));
+  list.innerHTML = Object.entries(groups).map(([lg,ms])=>`<h2>${lg}</h2>`+ms.map(m=>{
+    const live = LIVE.includes(m.s), done = DONE.includes(m.s), off = OFF.includes(m.s);
+    let mid;
+    if(live||done) mid = `<div class="score">${m.gh} - ${m.ga}</div><div class="st ${live?"live":""}">${live?"مباشر":"انتهت"}</div>`;
+    else if(off) mid = `<div class="st">مؤجلة</div>`;
+    else mid = `<div class="time">${localTime(m)}</div><div class="st">لم تبدأ</div>`;
+    return `<div class="m">${team(m.h,m.hl)}<div class="mid">${mid}</div>${team(m.a,m.al)}</div>`;
+  }).join("")).join("");
 }
 
-window.addEventListener('load', function() {
-  const savedScroll = localStorage.getItem('scrollPosition');
-  if (savedScroll) {
-    setTimeout(() => {
-      window.scrollTo({ top: parseInt(savedScroll), behavior: 'auto' });
-      localStorage.removeItem('scrollPosition');
-    }, 100);
-  }
-});
-
-function openPlayer(ytId, pushHistory) {
-  if (!ytId) return;
-    localStorage.setItem('scrollPosition', window.scrollY);
-    ytPoster.src = `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`;
-    ytPoster.style.display = 'block';
-    home.style.display = 'none';
-    playerPage.style.display = 'block';
-    youtubeFrame.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
-    youtubeFrame.onload = ()=>{ ytPoster.style.display = 'none'; };
-    playerOpen = true;
-    if (pushHistory) {
-      try { history.pushState({view: 'player', videoId: ytId}, '', '#play=' + ytId); } catch (error) {}
-    }
-}
-
-cards.forEach(card=>{
-  card.onclick = ()=> openPlayer(getYouTubeId(card.dataset.stream), true);
-});
-
-const savedPlayer = location.hash.match(/^#play=([A-Za-z0-9_-]{11})$/);
-if (savedPlayer) openPlayer(savedPlayer[1], false);
-
-window.addEventListener('popstate', () => {
-  if (playerOpen || playerPage.style.display === 'block') closePlayer(false);
-});
-
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && playerOpen) history.back();
-});
-
-window.addEventListener('pagehide', stopPlayback);
-window.addEventListener('beforeunload', stopPlayback);
+document.getElementById("q").addEventListener("input",render);
+buildTabs();load();
 </script>
-
 </body>
 </html>
